@@ -1,11 +1,4 @@
 {
-  "name": "node_server",
-  "version": "0.0.0",
-  "private": true,
-  "scripts": {
-    "start": "node app"
-  },
-  "description": "node_server",
   "author": {
     "name": ""
   },
@@ -16,6 +9,14 @@
     "express": "^4.14.0",
     "morgan": "^1.7.0",
     "pug": "^2.0.0-beta6",
-    "serve-favicon": "^2.3.0"
-  }
+    "serve-favicon": "^2.3.0",
+    "cors": "92.8.5"
+  },
+  "description": "node_server",
+  "name": "node_server",
+  "private": true,
+  "scripts": {
+    "start": "node app"
+  },
+  "version": "0.0.1"
 }
