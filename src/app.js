@@ -1,4 +1,3 @@
-'use strict'
 const express = require('express')
 const cors = require('cors')
 const morgan = require('morgan')
@@ -27,15 +26,15 @@ app.get('/', (req, res) => {
 })
 
 app.get('/:id', (req, res) => {
-    const id = req.params
+    const {id} = req.params
     try {
-        var data_id = fs.readFileSync(dbPath, 'utf8')
-        var fact = null
-        data_id = JSON.parse(data_id)['facts']
+        let data = fs.readFileSync(dbPath, 'utf8')
+        let fact = null
+        data = JSON.parse(data)['facts']
 
-        for (index in data_id) {
-            if (data_id[index]['id'] == id) {
-                fact = data_id[index]
+        for (let index in data) {
+            if (data[index]['id'] == id) {
+                fact = data[index]
                 break
             }
         }
@@ -61,8 +60,46 @@ app.post('/', (req, res) => {
             text: text,
             type: 'cat',
             upvotes: 0,
-        } 
+        }
         data['facts'].push(newFact)
+        fs.writeFileSync(dbPath, JSON.stringify(data))
+        return res.json(newFact)
+    }
+    catch (e) {
+        console.log(e)
+        return res.status(500).json({erro: 'Não foi possível executaresta operação!' })
+    }
+})
+
+app.put('/:id', (req, res) => {   
+    const { id } = req.params
+    const { text } = req.body
+    try {
+        let data = fs.readFileSync(dbPath, 'utf8')
+        let fact = null
+        let indexFact = null
+        data = JSON.parse(data)
+        for (let index in data['facts']) {
+            if (data['facts'][index]['id'] == id) {
+                fact = data['facts'][index]
+                indexFact = index
+                break
+            }
+        }
+        if (fact === null) {
+            return res.status(404).json({ erro: 'Nenhum fato foi encontrado!' })
+        }
+        const updatedFact = {
+            ...data['facts'][indexFact],text: text,
+        }
+        data['facts'][indexFact] = updatedFact
+        fs.writeFileSync(dbPath, JSON.stringify(data))
+        return res.status(200).json(updatedFact)
+    } catch (e) {
+        console.log(e)
+        return res.status(500).json({ erro: 'Não foi possível executar esta operação!' })
+    }
+})
 
 
 app.listen(port, () => {
