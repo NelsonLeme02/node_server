@@ -7,6 +7,10 @@ const dbPath = path.resolve(__dirname, './db/facts.json')
 const app = express()
 const port = 3000
 
+app.listen(port, () => {
+    console.log(`Running on ${port}`)
+})
+
 app.use(express.json())
 
 app.use(cors())
@@ -101,7 +105,32 @@ app.put('/:id', (req, res) => {
     }
 })
 
-
-app.listen(port, () => {
-  console.log(`Running on ${port}`)
+app.delete('/:id', (req, res) => {
+    const { id } = req.params
+    try {
+        let data = fs.readFileSync(dbPath, 'utf8')
+        let indexFact = null
+        data = JSON.parse(data)
+        for (let index in data['facts']) {
+            if (data['facts'][index]['id'] == id) {
+                indexFact = index
+                break
+            }
+        }
+        if (indexFact == null) {
+            return res
+                .status(404).json({ erro: 'Nenhum fato foi encontrado!' })
+        }
+        data['facts'].splice(indexFact, 1)
+        fs.writeFileSync(dbPath, JSON.stringify(data))
+        return res.sendStatus(204)
+        return res()
+    } catch (e) {
+        console.log(e)
+        return res
+            .status(500)
+            .json({ erro: 'Não foi possível executar esta operação!' })
+    }
 })
+
+
