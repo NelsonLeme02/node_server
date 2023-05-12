@@ -32,6 +32,7 @@
   <ItemGroup>
     <Content Include="src\app.js" />
     <Content Include="src\controllers\FactsController.js" />
+    <Content Include="src\db\ConnectionDB.js" />
     <Content Include="src\db\facts.json" />
     <Content Include="src\package.json" />
     <Content Include="src\README.md" />
